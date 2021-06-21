@@ -24,13 +24,14 @@ public class Vecteur {
 		this(x,y);
 		this.scaling=scaling;
 	}
-	public void normaliser() {//Ramène le vecteur sur des normes (rayon 1 max)
+	public Vecteur normaliser() {//Ramène le vecteur sur des normes (rayon 1 max)
 		double longueur=longueurVecteur();
-		if(longueur==0)return;
-		x.set(x.get()/longueur);
-		y.set(y.get()/longueur);
+		if(longueur!=0) {
+			x.set(x.get()/longueur);
+			y.set(y.get()/longueur);
+		}
+		return this;
 	}
-	
 	//Getter
 	public double getX() {
 		return this.x.get();

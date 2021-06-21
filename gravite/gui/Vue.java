@@ -19,7 +19,7 @@ public class Vue extends Group implements Renderer{
 	private GraphicsContext context;
 	private Play_Stop gui_play_stop;
 	private Choix_Satellite gui_satellite_choice;
-	
+	//private Put_Satellite gui_satellite_put;
 	private LinkedList<Gui_Satellite> gui_satellite_list;
 	{
 		//Initialisation
@@ -82,7 +82,7 @@ public class Vue extends Group implements Renderer{
 	@Override
 	public void render() {
 		context.save();
-		context.setFill(Color.BLACK.brighter());
+		context.setFill(Color.BLANCHEDALMOND.brighter());
 		context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		for(Gui_Satellite tmp:gui_satellite_list) {
 			context.drawImage(tmp.getImage(), tmp.getCenterX(), tmp.getCenterY());

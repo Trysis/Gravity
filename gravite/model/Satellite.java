@@ -10,51 +10,65 @@ import javafx.beans.property.SimpleDoubleProperty;
 public class Satellite implements GameObject{
 	public static double CONSTANTE_GRAVITATIONNEL=6.673*Math.pow(10, -11);//en N.m².kg-²
 	protected double masse=0;//Masse en kg
-
+	
 	private LinkedList<Satellite> satellite_list=new LinkedList<>();//Liste des autres satellites
 	protected DoubleProperty x = new SimpleDoubleProperty(0);//Centre en x
 	protected DoubleProperty y = new SimpleDoubleProperty(0);//Centre en y
 	
 	protected Vecteur vecteur=new Vecteur(0,0);
 	
+	protected double taille=0;//Nombre de satellites
+	protected double somme_x=0;//Somme des positions en x des satellites
+	protected double somme_y=0;//Somme des positions en y des satellites
 	protected Gui_Satellite gui_satellite;
 	public Satellite(Gui_Satellite gui_satellite) {
 		this.gui_satellite=gui_satellite;
 		x.set(gui_satellite.getLayoutX());
 		y.set(gui_satellite.getLayoutY());
+		//Properties of layout
 		gui_satellite.layoutXProperty().bind(x);//Lie la valeur en x du layout au x du Satellite
 		gui_satellite.layoutYProperty().bind(y);//Lie la valeur en y du layout en y du Satellite
-		//
+		//Properties of vector
 		gui_satellite.getendXProperty().bind(vecteur.getXproperty().multiply(gui_satellite.getRayon()));
 		gui_satellite.getendYProperty().bind(vecteur.getYproperty().multiply(gui_satellite.getRayon()));
 	}
 	@Override
-	public void updateData(long n) {//n-1+4 operations Permet de mettre a jours la valeurs du vecteur (trajectoire)
-		double tmp_x=0;
-		double tmp_y=0;
+	public void updateData(long n) {//Permet de mettre a jours la valeurs du vecteur (trajectoire)
 		for(Satellite tmp: satellite_list) {
-			tmp_x+=tmp.getX()-getX();
-			tmp_y+=tmp.getY()-getY();
+			tmp.somme_x-=this.getX();
+			tmp.somme_y-=this.getY();
 		}
-		vecteur.subVecteur(tmp_x,tmp_y);
+		vecteur.subVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY());
 		
 		x.set(x.get()+vecteur.getVelociteX());
 		y.set(y.get()+vecteur.getVelociteY());
+		
+		for(Satellite tmp: satellite_list) {
+			tmp.somme_x+=this.getX();
+			tmp.somme_y+=this.getY();
+		}
 		gui_satellite.render();
 	}
 	//Ajouts - remove
 	public void addSatellite(Satellite satellite) {
+		taille++;
+		somme_x+=satellite.getX();
+		somme_y+=satellite.getY();
 		satellite_list.add(satellite);
 	}
 	public void addSatellite(LinkedList<Satellite> satellite) {
-		satellite_list.addAll(satellite);
+		for(Satellite tmp: satellite)addSatellite(tmp);
 	}
 	public void removeSatellite(Satellite satellite) {
+		taille--;
+		somme_x-=satellite.getX();
+		somme_y-=satellite.getY();
 		satellite_list.remove(satellite);
 	}
 	public void clearSatellite() {
-		satellite_list.clear();
+		for(Satellite tmp: satellite_list)removeSatellite(tmp);
 	}
+	
 	//Getter
 	public double getX() {
 		return x.get();
