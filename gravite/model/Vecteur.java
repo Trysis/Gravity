@@ -18,7 +18,6 @@ public class Vecteur {
 	public Vecteur(double x,double y) {
 		this.x.set(x);
 		this.y.set(y);
-		normaliser();
 	}
 	public Vecteur(double x,double y,double scaling) {
 		this(x,y);
@@ -48,11 +47,9 @@ public class Vecteur {
 	//Setter
 	public void setX(double x) {
 		this.x.set(x);
-		normaliser();
 	}
 	public void setY(double y) {
 		this.y.set(y);
-		normaliser();
 	}
 	public void set(double x,double y) {
 		setX(x);
@@ -62,24 +59,24 @@ public class Vecteur {
 		this.scaling=scaling;
 	}
 	//Calculs numériques sur vecteur
-	public void addVecteur(Vecteur vecteur) {
+	public Vecteur addVecteur(Vecteur vecteur) {
 		x.set(x.get()+vecteur.getX());
 		y.set(y.get()+vecteur.getY());
-		normaliser();
+		return this;
 	}
-	public void multiplyVecteur(Vecteur vecteur) {//Inutile puisqu'on normalise
+	public Vecteur multiplyVecteur(Vecteur vecteur) {//Inutile puisqu'on normalise
 		x.set(x.get()*vecteur.getX());
 		y.set(y.get()*vecteur.getY());
-		normaliser();
+		return this;
 	}
-	public void subVecteur(Vecteur vecteur) {
+	public Vecteur subVecteur(Vecteur vecteur) {
 		x.set(x.get()-vecteur.getX());
 		y.set(y.get()-vecteur.getY());
 		opposateVecteur();
-		normaliser();
+		return this;
 	}
-	public void subVecteur(double x,double y) {
-		subVecteur(new Vecteur(x,y));
+	public Vecteur subVecteur(double x,double y) {
+		return subVecteur(new Vecteur(x,y));
 	}
 	//Produit scalaire
 	public void addScalaire(double valeur) {//Produit scalaire

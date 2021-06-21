@@ -15,7 +15,7 @@ public class Satellite implements GameObject{
 	protected DoubleProperty x = new SimpleDoubleProperty(0);//Centre en x
 	protected DoubleProperty y = new SimpleDoubleProperty(0);//Centre en y
 	
-	protected Vecteur vecteur=new Vecteur(0,0);
+	protected Vecteur vecteur=new Vecteur(0,0).normaliser();
 	
 	protected double taille=0;//Nombre de satellites
 	protected double somme_x=0;//Somme des positions en x des satellites
@@ -38,7 +38,7 @@ public class Satellite implements GameObject{
 			tmp.somme_x-=this.getX();
 			tmp.somme_y-=this.getY();
 		}
-		vecteur.subVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY());
+		vecteur.subVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).normaliser();
 		
 		x.set(x.get()+vecteur.getVelociteX());
 		y.set(y.get()+vecteur.getVelociteY());
