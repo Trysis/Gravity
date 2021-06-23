@@ -6,30 +6,27 @@ import javafx.beans.property.SimpleDoubleProperty;
 public class Vecteur {
 	private DoubleProperty x = new SimpleDoubleProperty(0);//abscisse du vecteur
 	private DoubleProperty y = new SimpleDoubleProperty(0);//ordonnee du vecteur
-	private double scaling=1;
+	private double magnitude=1;//
+	private double cap=-1;
 	//Constructeur
 	public Vecteur() {
 		this(0,0);
 	}
-	public Vecteur(double scaling) {
+	public Vecteur(Vecteur vecteur) {
+		this(vecteur.getX(),vecteur.getY(),vecteur.magnitude);
+		this.cap=vecteur.cap;
+	}
+	public Vecteur(double magnitude) {
 		this();
-		this.scaling=scaling;
+		this.magnitude=magnitude;
 	}
 	public Vecteur(double x,double y) {
 		this.x.set(x);
 		this.y.set(y);
 	}
-	public Vecteur(double x,double y,double scaling) {
+	public Vecteur(double x,double y,double magnitude) {
 		this(x,y);
-		this.scaling=scaling;
-	}
-	public Vecteur normaliser() {//Ramène le vecteur sur des normes (rayon 1 max)
-		double longueur=longueurVecteur();
-		if(longueur!=0) {
-			x.set(x.get()/longueur);
-			y.set(y.get()/longueur);
-		}
-		return this;
+		this.magnitude=magnitude;
 	}
 	//Getter
 	public double getX() {
@@ -38,77 +35,103 @@ public class Vecteur {
 	public double getY() {
 		return this.y.get();
 	}
-	public DoubleProperty getXproperty() {
+	private double getMagnitude() {
+		if(cap>=0)if(magnitude>cap)return cap;
+		return magnitude;
+	}
+	public double getX_Magnitude() {
+		return getX()*getMagnitude();
+	}
+	public double getY_Magnitude() {
+		return getY()*getMagnitude();
+	}
+	public DoubleProperty getXproperty() {//x property of vector
 		return x;
 	}
-	public DoubleProperty getYproperty() {
+	public DoubleProperty getYproperty() {//y property of vector
 		return y;
 	}
 	//Setter
-	public void setX(double x) {
+	public Vecteur setX(double x) {//Set x
+		return setVecteur(x,getY());
+	}
+	public Vecteur setY(double y) {//Set y
+		return setVecteur(getX(),y);
+	}
+	public Vecteur setVecteur(double x,double y) {//Set x et y
 		this.x.set(x);
-	}
-	public void setY(double y) {
 		this.y.set(y);
+		return convert();
 	}
-	public void set(double x,double y) {
-		setX(x);
-		setY(y);
+	public Vecteur setMagnitude(double valeur) {
+		this.magnitude=Math.abs(valeur);
+		return this;
 	}
-	public void setVelocite(double scaling) {
-		this.scaling=scaling;
+	public Vecteur setCap(double valeur) {
+		cap=valeur;
+		return this;
 	}
 	//Calculs numériques sur vecteur
-	public Vecteur addVecteur(Vecteur vecteur) {
-		x.set(x.get()+vecteur.getX());
-		y.set(y.get()+vecteur.getY());
+	
+	//Additions sur vecteurs
+	public Vecteur addVecteur(double x,double y) {//TODO ICI
+		this.x.set(getX()+x);
+		this.y.set(getY()+y);
 		return this;
 	}
-	public Vecteur multiplyVecteur(Vecteur vecteur) {//Inutile puisqu'on normalise
-		x.set(x.get()*vecteur.getX());
-		y.set(y.get()*vecteur.getY());
-		return this;
+	public Vecteur addVecteur(Vecteur vecteur) {
+		return addVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
+	}
+	//Soustractions sur vecteurs
+	public Vecteur subVecteur(double x,double y) {
+		return addVecteur(-x,-y);
 	}
 	public Vecteur subVecteur(Vecteur vecteur) {
-		x.set(x.get()-vecteur.getX());
-		y.set(y.get()-vecteur.getY());
-		opposateVecteur();
+		return subVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
+	}
+	//Multiplications sur vecteurs
+	public Vecteur multiplyVecteur(double x,double y) {//TODO ici ? (par pour le moment)
+		this.x.set(getX()*x);
+		this.y.set(getY()*y);
 		return this;
 	}
-	public Vecteur subVecteur(double x,double y) {
-		return subVecteur(new Vecteur(x,y));
+	public Vecteur multiplyVecteur(Vecteur vecteur) {//
+		return multiplyVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
 	}
-	//Produit scalaire
-	public void addScalaire(double valeur) {//Produit scalaire
-		x.set(x.get()*valeur);
-		y.set(y.get()*valeur);
+	//Normalisation (longueur==1)
+	public Vecteur normaliser() {//Ramène le vecteur sur des normes (rayon 1 max) //TODO peut être ici
+		double longueur=longueurVecteurWithMagnitude();
+		if(longueur!=0) {
+			x.set(x.get()/longueur);
+			y.set(y.get()/longueur);
+		}
+		return this;
 	}
-	public double getScalaire(Vecteur vecteur) {//get
-		return getX()*vecteur.getX()+getY()*vecteur.getY();
+	private Vecteur convert() {//Normalizing vector, and modifying it's magnitude to keep it the "same"
+		magnitude=longueurVecteurWithMagnitude();
+		return normaliser();
 	}
 	//Image / Inverse d'un vecteur
-	public void opposateXVecteur() {
+	public Vecteur opposateXVecteur() {//Vecteur mirroir en x
 		x.set(-x.get());
+		return this;
 	}
-	public void opposateYVecteur() {
+	public Vecteur opposateYVecteur() {//Vecteur mirroir en y
 		y.set(-y.get());
+		return this;
 	}
-	public void opposateVecteur() {
-		opposateXVecteur();
-		opposateYVecteur();
-	}
-	//Getter
-	public double getVelociteX() {
-		return getX()*scaling;
-	}
-	public double getVelociteY() {
-		return getY()*scaling;
+	public Vecteur opposateVecteur() {//Vecteur mirroir en x et y
+		return opposateXVecteur().opposateYVecteur();
 	}
 	//Longueur du vecteur
 	public double longueurVecteur() {
 		return Math.pow(getX()*getX()+getY()*getY(), 0.5);
 	}
-	public String toString() {
-		return "Direction = "+x+";"+y+" speed ="+scaling;
+	public double longueurVecteurWithMagnitude() {
+		return Math.pow(getX_Magnitude()*getX_Magnitude()+getY_Magnitude()*getY_Magnitude(), 0.5);
 	}
+	public String toString() {
+		return "Direction = "+x.get()+";"+y.get()+" speed ="+magnitude;
+	}
+
 }

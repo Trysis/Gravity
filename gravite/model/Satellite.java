@@ -15,7 +15,8 @@ public class Satellite implements GameObject{
 	protected DoubleProperty x = new SimpleDoubleProperty(0);//Centre en x
 	protected DoubleProperty y = new SimpleDoubleProperty(0);//Centre en y
 	
-	protected Vecteur vecteur=new Vecteur(0,0).normaliser();
+	protected Vecteur vitesse=new Vecteur((Math.random()*2-1)*1,(Math.random()*2-1)*1).setMagnitude(0.01).setCap(3);
+	protected Vecteur acceleration=new Vecteur(0,0);
 	
 	protected double taille=0;//Nombre de satellites
 	protected double somme_x=0;//Somme des positions en x des satellites
@@ -29,8 +30,8 @@ public class Satellite implements GameObject{
 		gui_satellite.layoutXProperty().bind(x);//Lie la valeur en x du layout au x du Satellite
 		gui_satellite.layoutYProperty().bind(y);//Lie la valeur en y du layout en y du Satellite
 		//Properties of vector
-		gui_satellite.getendXProperty().bind(vecteur.getXproperty().multiply(gui_satellite.getRayon()));
-		gui_satellite.getendYProperty().bind(vecteur.getYproperty().multiply(gui_satellite.getRayon()));
+		gui_satellite.getendXProperty().bind(vitesse.getXproperty().multiply(gui_satellite.getRayon()));
+		gui_satellite.getendYProperty().bind(vitesse.getYproperty().multiply(gui_satellite.getRayon()));
 	}
 	@Override
 	public void updateData(long n) {//Permet de mettre a jours la valeurs du vecteur (trajectoire)
@@ -38,10 +39,12 @@ public class Satellite implements GameObject{
 			tmp.somme_x-=this.getX();
 			tmp.somme_y-=this.getY();
 		}
-		vecteur.subVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).normaliser();
+		acceleration.setVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).setMagnitude(1).normaliser();
 		
-		x.set(x.get()+vecteur.getVelociteX());
-		y.set(y.get()+vecteur.getVelociteY());
+		vitesse.addVecteur(acceleration);
+		
+		x.set(x.get()+vitesse.getX_Magnitude());
+		y.set(y.get()+vitesse.getY_Magnitude());
 		
 		for(Satellite tmp: satellite_list) {
 			tmp.somme_x+=this.getX();
@@ -77,6 +80,6 @@ public class Satellite implements GameObject{
 		return y.get();
 	}
 	public Vecteur getVecteur() {
-		return vecteur;
+		return vitesse;
 	}
 }
