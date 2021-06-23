@@ -52,16 +52,24 @@ public class Vecteur {
 		return y;
 	}
 	//Setter
+<<<<<<< HEAD
 	public Vecteur setX(double x) {//Set x
 		return setVecteur(x,getY());
 	}
 	public Vecteur setY(double y) {//Set y
 		return setVecteur(getX(),y);
+=======
+	public void setX(double x) {
+		this.x.set(x);
+>>>>>>> 24d5d4fa13edbe6a50def7fb1a3d61e941e676a9
 	}
 	public Vecteur setVecteur(double x,double y) {//Set x et y
 		this.x.set(x);
 		this.y.set(y);
+<<<<<<< HEAD
 		return convert();
+=======
+>>>>>>> 24d5d4fa13edbe6a50def7fb1a3d61e941e676a9
 	}
 	public Vecteur setMagnitude(double valeur) {
 		this.magnitude=Math.abs(valeur);
@@ -72,6 +80,7 @@ public class Vecteur {
 		return this;
 	}
 	//Calculs numériques sur vecteur
+<<<<<<< HEAD
 	
 	//Additions sur vecteurs
 	public Vecteur addVecteur(double x,double y) {//TODO ICI
@@ -88,6 +97,26 @@ public class Vecteur {
 	}
 	public Vecteur subVecteur(Vecteur vecteur) {
 		return subVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
+=======
+	public Vecteur addVecteur(Vecteur vecteur) {
+		x.set(x.get()+vecteur.getX());
+		y.set(y.get()+vecteur.getY());
+		return this;
+	}
+	public Vecteur multiplyVecteur(Vecteur vecteur) {//Inutile puisqu'on normalise
+		x.set(x.get()*vecteur.getX());
+		y.set(y.get()*vecteur.getY());
+		return this;
+	}
+	public Vecteur subVecteur(Vecteur vecteur) {
+		x.set(x.get()-vecteur.getX());
+		y.set(y.get()-vecteur.getY());
+		opposateVecteur();
+		return this;
+	}
+	public Vecteur subVecteur(double x,double y) {
+		return subVecteur(new Vecteur(x,y));
+>>>>>>> 24d5d4fa13edbe6a50def7fb1a3d61e941e676a9
 	}
 	//Multiplications sur vecteurs
 	public Vecteur multiplyVecteur(double x,double y) {//TODO ici ? (par pour le moment)
