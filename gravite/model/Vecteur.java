@@ -74,7 +74,7 @@ public class Vecteur {
 	//Calculs numériques sur vecteur
 	
 	//Additions sur vecteurs
-	public Vecteur addVecteur(double x,double y) {//TODO ICI
+	public Vecteur addVecteur(double x,double y) {
 		this.x.set(getX_Magnitude()+x);
 		this.y.set(getY_Magnitude()+y);
 		return convert();
@@ -90,33 +90,19 @@ public class Vecteur {
 		return subVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
 	}
 	//Multiplications sur vecteurs
-	public Vecteur getMultiplyVecteur(double multiply) {
-		return new Vecteur(this).multiplyVecteur(multiply);
-	}
 	private Vecteur multiplyVecteur(double x) {
 		return multiplyVecteur(x,x);
 	}
-	public Vecteur multiplyVecteur(double x,double y) {//TODO ici ? (par pour le moment)
+	public Vecteur getMultiplyVecteur(double multiply) {
+		return new Vecteur(this).multiplyVecteur(multiply);
+	}
+	public Vecteur multiplyVecteur(double x,double y) {
 		this.x.set(getX_Magnitude()*x);
 		this.y.set(getY_Magnitude()*y);
 		return convert();
 	}
 	public Vecteur multiplyVecteur(Vecteur vecteur) {//
 		return multiplyVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
-	}
-	//Normalisation (longueur==1)
-	public Vecteur normaliser() {//Ramène le vecteur sur des normes (rayon 1 max) //TODO peut être ici
-		double longueur=longueurVecteurWithMagnitude();
-		
-		if(longueur!=0) {
-			x.set(getX_Magnitude()/longueur);
-			y.set(getY_Magnitude()/longueur);
-		}
-		return this;
-	}
-	private Vecteur convert() {//Normalizing vector, and modifying it's magnitude to keep it the "same"
-		
-		return setMagnitude(longueurVecteur()).normaliser();
 	}
 	//Image / Inverse d'un vecteur
 	public Vecteur opposateXVecteur() {//Vecteur mirroir en x
@@ -130,15 +116,26 @@ public class Vecteur {
 	public Vecteur opposateVecteur() {//Vecteur mirroir en x et y
 		return opposateXVecteur().opposateYVecteur();
 	}
-	//Longueur du vecteur
-	public double longueurVecteur() {
-		return Math.pow(getX()*getX()+getY()*getY(), 0.5);
+	//Normalizing vector, and modifying it's magnitude to keep it the "same"
+	private Vecteur convert() {
+		return setMagnitude(Math.pow(getX()*getX()+getY()*getY(), 0.5)).normaliser();
 	}
-	public double longueurVecteurWithMagnitude() {
+	//Normalisation (longueur==1)
+	public Vecteur normaliser() {//Ramène le vecteur sur des normes (rayon =1)
+		double longueur=longueurVecteur();
+		
+		if(longueur!=0) {
+			x.set(getX_Magnitude()/longueur);
+			y.set(getY_Magnitude()/longueur);
+		}
+		return this;
+	}
+	//Longueur 
+	public double longueurVecteur() {//Longueur absolue du vecteur
 		return Math.pow(getX_Magnitude()*getX_Magnitude()+getY_Magnitude()*getY_Magnitude(), 0.5);
 	}
 	public String toString() {
-		return "Direction = "+x.get()+";"+y.get()+" speed ="+magnitude;
+		return "Direction = ["+x.get()+";"+y.get()+"]/	Vitesse ="+magnitude;
 	}
 
 }
