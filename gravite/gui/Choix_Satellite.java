@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 public class Choix_Satellite extends ScrollPane{
-	private Selectable_Satellite selected=Gui_Satellite.instance(5);
+	private Selectable_Satellite selected=Gui_Satellite.instance(5,Color.DARKGOLDENROD);
 	private Selectable_Satellite[] selectable_list=new Selectable_Satellite[3];
 	{
 		selectable_list[0]=selected;
