@@ -3,6 +3,7 @@ package gui;
 import java.util.LinkedList;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,6 +31,9 @@ public class Choix_Satellite extends ScrollPane{
 				selected=selectable;
 			});
 		}
+	}
+	private class Data extends Label{
+		
 	}
 	private final LinkedList<Choix> getChoix(){
 		LinkedList<Choix> choice_list=new LinkedList<>();

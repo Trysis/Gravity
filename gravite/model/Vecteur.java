@@ -35,7 +35,11 @@ public class Vecteur {
 	public double getY() {
 		return this.y.get();
 	}
+<<<<<<< HEAD
 	private double getMagnitude() {
+=======
+	public double getMagnitude() {
+>>>>>>> acceleration
 		if(cap>=0)if(magnitude>cap)return cap;
 		return magnitude;
 	}
@@ -53,23 +57,33 @@ public class Vecteur {
 	}
 	//Setter
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> acceleration
 	public Vecteur setX(double x) {//Set x
 		return setVecteur(x,getY());
 	}
 	public Vecteur setY(double y) {//Set y
 		return setVecteur(getX(),y);
+<<<<<<< HEAD
 =======
 	public void setX(double x) {
 		this.x.set(x);
 >>>>>>> 24d5d4fa13edbe6a50def7fb1a3d61e941e676a9
+=======
+>>>>>>> acceleration
 	}
 	public Vecteur setVecteur(double x,double y) {//Set x et y
 		this.x.set(x);
 		this.y.set(y);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return convert();
 =======
 >>>>>>> 24d5d4fa13edbe6a50def7fb1a3d61e941e676a9
+=======
+		return convert();
+>>>>>>> acceleration
 	}
 	public Vecteur setMagnitude(double valeur) {
 		this.magnitude=Math.abs(valeur);
@@ -80,6 +94,7 @@ public class Vecteur {
 		return this;
 	}
 	//Calculs numériques sur vecteur
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	//Additions sur vecteurs
@@ -139,6 +154,39 @@ public class Vecteur {
 	private Vecteur convert() {//Normalizing vector, and modifying it's magnitude to keep it the "same"
 		magnitude=longueurVecteurWithMagnitude();
 		return normaliser();
+=======
+	
+	//Additions sur vecteurs
+	public Vecteur addVecteur(double x,double y) {
+		this.x.set(getX_Magnitude()+x);
+		this.y.set(getY_Magnitude()+y);
+		return convert();
+	}
+	public Vecteur addVecteur(Vecteur vecteur) {
+		return addVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
+	}
+	//Soustractions sur vecteurs
+	public Vecteur subVecteur(double x,double y) {
+		return addVecteur(-x,-y);
+	}
+	public Vecteur subVecteur(Vecteur vecteur) {
+		return subVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
+	}
+	//Multiplications sur vecteurs
+	private Vecteur multiplyVecteur(double x) {
+		return multiplyVecteur(x,x);
+	}
+	public Vecteur getMultiplyVecteur(double multiply) {
+		return new Vecteur(this).multiplyVecteur(multiply);
+	}
+	public Vecteur multiplyVecteur(double x,double y) {
+		this.x.set(getX_Magnitude()*x);
+		this.y.set(getY_Magnitude()*y);
+		return convert();
+	}
+	public Vecteur multiplyVecteur(Vecteur vecteur) {//
+		return multiplyVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
+>>>>>>> acceleration
 	}
 	//Image / Inverse d'un vecteur
 	public Vecteur opposateXVecteur() {//Vecteur mirroir en x
@@ -151,16 +199,37 @@ public class Vecteur {
 	}
 	public Vecteur opposateVecteur() {//Vecteur mirroir en x et y
 		return opposateXVecteur().opposateYVecteur();
+<<<<<<< HEAD
+=======
 	}
-	//Longueur du vecteur
-	public double longueurVecteur() {
-		return Math.pow(getX()*getX()+getY()*getY(), 0.5);
+	//Normalizing vector, and modifying it's magnitude to keep it the "same"
+	private Vecteur convert() {
+		return setMagnitude(Math.pow(getX()*getX()+getY()*getY(), 0.5)).normaliser();
+	}
+	//Normalisation (longueur==1)
+	public Vecteur normaliser() {//Ramène le vecteur sur des normes (rayon =1)
+		double longueur=longueurVecteur();
+		
+		if(longueur!=0) {
+			x.set(getX_Magnitude()/longueur);
+			y.set(getY_Magnitude()/longueur);
+		}
+		return this;
+>>>>>>> acceleration
+	}
+	//Longueur 
+	public double longueurVecteur() {//Longueur absolue du vecteur
+		return Math.pow(getX_Magnitude()*getX_Magnitude()+getY_Magnitude()*getY_Magnitude(), 0.5);
 	}
 	public double longueurVecteurWithMagnitude() {
 		return Math.pow(getX_Magnitude()*getX_Magnitude()+getY_Magnitude()*getY_Magnitude(), 0.5);
 	}
 	public String toString() {
+<<<<<<< HEAD
 		return "Direction = "+x.get()+";"+y.get()+" speed ="+magnitude;
+=======
+		return "Direction = ["+x.get()+";"+y.get()+"]/	Vitesse ="+magnitude;
+>>>>>>> acceleration
 	}
 
 }
