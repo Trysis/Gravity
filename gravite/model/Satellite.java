@@ -17,12 +17,17 @@ public class Satellite implements GameObject{
 	
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	protected Vecteur vitesse=new Vecteur((Math.random()*2-1)*1,(Math.random()*2-1)*1).setMagnitude(0.01).setCap(3);
 	protected Vecteur acceleration=new Vecteur(0,0);
 =======
 	protected Vecteur vecteur=new Vecteur(0,0).normaliser();
 	protected Vecteur acceleration=new Vecteur(1,0).normaliser();
 >>>>>>> 24d5d4fa13edbe6a50def7fb1a3d61e941e676a9
+=======
+	protected Vecteur vitesse=new Vecteur(0,0);
+	protected Vecteur acceleration=new Vecteur(0,0);
+>>>>>>> acceleration
 =======
 	protected Vecteur vitesse=new Vecteur(0,0);
 	protected Vecteur acceleration=new Vecteur(0,0);
@@ -51,6 +56,7 @@ public class Satellite implements GameObject{
 		}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		acceleration.setVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).setMagnitude(1).normaliser();
 =======
 		vecteur.subVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).normaliser();
@@ -60,6 +66,14 @@ public class Satellite implements GameObject{
 		
 		x.set(x.get()+vitesse.getX_Magnitude());
 		y.set(y.get()+vitesse.getY_Magnitude());
+=======
+		acceleration.setVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).setMagnitude(1).normaliser();
+		
+		vitesse.addVecteur(acceleration);
+		
+		x.set(x.get()+vitesse.getMultiplyVecteur(1).getX_Magnitude());
+		y.set(y.get()+vitesse.getMultiplyVecteur(1).getY_Magnitude());
+>>>>>>> acceleration
 =======
 		acceleration.setVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).setMagnitude(1).normaliser();
 		
