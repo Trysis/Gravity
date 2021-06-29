@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import gameInterfaces.Renderer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -19,7 +20,7 @@ public class Vue extends Group implements Renderer{
 	private GraphicsContext context;
 	private Play_Stop gui_play_stop;
 	private Choix_Satellite gui_satellite_choice;
-	//private Put_Satellite gui_satellite_put;
+
 	private LinkedList<Gui_Satellite> gui_satellite_list;
 	{
 		//Initialisation
@@ -40,11 +41,15 @@ public class Vue extends Group implements Renderer{
 		gui_play_stop.layoutYProperty().bind(gui_satellite_choice.layoutYProperty().add(gui_satellite_choice.heightProperty().multiply(1.1)));
 	}
 	public Vue() {
-		setEventFilter();
+		setEventFilterToCanvas();
+		setEventFilterToPutButton();
 	}
 	//Getter
 	public final Gui_Satellite getSatellite() {
 		return gui_satellite_list.getLast();
+	}
+	public final Selectable_Satellite getSelected_Satellite() {
+		return gui_satellite_choice.getSelected_Satellite();
 	}
 	public BooleanProperty getBooleanProperty_fromPlay_Stop() {//Property value play_stop state
 		return gui_play_stop.getBooleanProperty();
@@ -56,37 +61,57 @@ public class Vue extends Group implements Renderer{
 		return canvas.heightProperty();
 	}
 	//Setter
+	//Canvas principal
 	private final <T extends Event> void addEventFiltertoCanvas(EventType<T> eventType, EventHandler<? super T> eventFilter) {
 		canvas.addEventFilter(eventType, eventFilter);
 	}
-	public final <T extends Event> void addEventHandlertoCanvas(EventType<T> eventType, EventHandler<? super T> eventFilter) {
-		canvas.addEventFilter(eventType, eventFilter);
+	public final <T extends Event> void addEventHandlertoCanvas(EventType<T> eventType, EventHandler<? super T> eventHandler) {
+		canvas.addEventHandler(eventType, eventHandler);
 	}
-	public final void bind(ObservableValue<? extends Number> readOnlyDoubleProperty,ObservableValue<? extends Number> readOnlyDoubleProperty2) {
-		canvas.widthProperty().bind(readOnlyDoubleProperty);
-		canvas.heightProperty().bind(readOnlyDoubleProperty2);
+	//Put Button
+	public final <T extends Event> void addEventFilterToPutButton(EventType<T> eventType, EventHandler<? super T> eventFilter) {
+		gui_satellite_choice.getPutButton().addEventFilter(eventType, eventFilter);
 	}
-	private void setEventFilter() {
+	public final <T extends Event> void addEventHandlerToPutButton(EventType<T> eventType, EventHandler<? super T> eventHandler) {
+		gui_satellite_choice.getPutButton().addEventHandler(eventType, eventHandler);
+	}
+	private void setEventFilterToCanvas() {
 		EventHandler<MouseEvent> click = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				Gui_Satellite tmp = Gui_Satellite.instance(gui_satellite_choice.getSelected_Satellite().getRayon(),gui_satellite_choice.getSelected_Satellite().getColor());//A changer
-				tmp.setLayoutX(event.getSceneX());
-				tmp.setLayoutY(event.getSceneY());
+				Gui_Satellite tmp = Gui_Satellite.instance(getSelected_Satellite().getRayon(),getSelected_Satellite().getColor());//A changer
+				
+				tmp.setCenterX(event.getSceneX());
+				tmp.setCenterY(event.getSceneY());
 				gui_satellite_list.add(tmp);
 			}
 		};
 		addEventFiltertoCanvas(MouseEvent.MOUSE_RELEASED, click);
 	}
-	//
+	public final void setEventFilterToPutButton() {
+		EventHandler<MouseEvent> click = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				Gui_Satellite tmp = Gui_Satellite.instance(getSelected_Satellite().getRayon(),getSelected_Satellite().getColor());//A changer
+				
+				tmp.setCenterX(getSelected_Satellite().getCenterX()-tmp.getRayon());
+				tmp.setCenterY(getSelected_Satellite().getCenterY()-tmp.getRayon());
+				gui_satellite_list.add(tmp);
+			}
+		};
+		addEventFilterToPutButton(MouseEvent.MOUSE_CLICKED, click);
+	}
+	public final void bind(ObservableValue<? extends Number> readOnlyDoubleProperty,ObservableValue<? extends Number> readOnlyDoubleProperty2) {
+		canvas.widthProperty().bind(readOnlyDoubleProperty);
+		canvas.heightProperty().bind(readOnlyDoubleProperty2);
+	}
+	//Graphics
 	@Override
 	public void render() {
 		context.save();
 		context.setFill(Color.BLANCHEDALMOND.brighter());
 		context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		for(Gui_Satellite tmp:gui_satellite_list) {
-			context.drawImage(tmp.getImage(), tmp.getCenterX(), tmp.getCenterY());
-		}
+		for(Gui_Satellite tmp:gui_satellite_list)context.drawImage(tmp.getImage(), tmp.getLayoutX(), tmp.getLayoutY());
 		context.restore();
 	}
 

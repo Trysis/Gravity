@@ -3,6 +3,13 @@ package ressources;
 import java.io.File;
 import java.net.MalformedURLException;
 
+import javafx.scene.SnapshotParameters;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
 public final class Ressources {
 	public final static String PATH = "src/ressources/";
 	public final static String PATH_toItems = PATH+"Items/";
@@ -17,5 +24,12 @@ public final class Ressources {
 			e.printStackTrace();
 		}
 		return "";
+	}
+	public final static Image getImage(String text) {
+		SnapshotParameters parametres = new SnapshotParameters();
+		parametres.setFill(Color.TRANSPARENT);
+		Text t=new Text(text);
+		t.setFont(new Font(15));
+		return t.snapshot(parametres, null);
 	}
 }
