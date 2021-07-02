@@ -1,38 +1,33 @@
 package controlleur;
 
-import java.util.LinkedList;
-
 import gui.Vue;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import model.GameLoop;
-import model.Satellite;
+import model.Model;
 
 public class Controleur {
-	private GameLoop game_loop;
+	private GameLoop game_loop=new GameLoop();
+	private Model model;
 	private Vue vue;
-	private LinkedList<Satellite> satellite_list=new LinkedList<>();//Liste des satellites
 
-	EventHandler<MouseEvent> click = new EventHandler<MouseEvent>() {
-		@Override
-		public void handle(MouseEvent arg0) {//2n+2 operations
-			Satellite tmp=new Satellite(vue.getSatellite());//Satellite partie model
-			tmp.addSatellite(satellite_list);//Ajout des satellites pour le calculs de sa trajectoire
-			for(Satellite bis: satellite_list)bis.addSatellite(tmp);
-			satellite_list.add(tmp);
-			game_loop.addGameObject(tmp);
-		}
+	EventHandler<MouseEvent> click_g = (MouseEvent) ->{
+		System.out.println(vue.getSatellite().hashCode());
+		game_loop.addGameObject(vue.getSatellite().hashCode(),model.addNewSatellite(vue.getSatellite()));
 	};
-	public Controleur(GameLoop game_loop, Vue vue){
-		this.game_loop=game_loop;
+	EventHandler<MouseEvent> click_d = (MouseEvent) ->{
+		//game_loop.removeGameObject(model.removeSatellite(/*Clicked On*.getId()/));
+	};
+	public Controleur(Model model, Vue vue){
 		this.vue=vue;
-		
-		game_loop.setVue(vue).start();
+		this.model=model;
 		
 		setBooleanListener();
 		setCanvasSizeListener();
 		setEventHandlerToCanvas();
 		setEventHandlerToPutButton();
+		
+		game_loop.setRenderer(vue).start();
 	}
 	private void setBooleanListener() {//Boolean listener pour mettre en pause ou play les animations
 		vue.getBooleanProperty_fromPlay_Stop().addListener(e->{
@@ -49,10 +44,9 @@ public class Controleur {
 		});
 	}
 	private void setEventHandlerToCanvas() {//Event permettant lors d'un clique sur Canvas de creer un satellite
-
-		vue.addEventHandlertoCanvas(MouseEvent.MOUSE_RELEASED, click);
+		vue.addEventHandlertoCanvas(MouseEvent.MOUSE_RELEASED, click_g);
 	}
 	private void setEventHandlerToPutButton() {
-		vue.addEventHandlerToPutButton(MouseEvent.MOUSE_CLICKED, click);
+		vue.addEventHandlerToPutButton(MouseEvent.MOUSE_CLICKED, click_g);
 	}
 }

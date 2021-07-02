@@ -1,6 +1,6 @@
 package gameInterfaces;
 
 public abstract interface ObservableGame {
-	public void addGameObject(GameObject gameobject);
-	public void removeGameObject(GameObject gameobject);
+	public void addGameObject(Integer key,GameObject gameobject);
+	public void removeGameObject(Integer key);
 }
