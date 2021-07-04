@@ -8,15 +8,15 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 public class Satellite implements GameObject{
-	public static double CONSTANTE_GRAVITATIONNEL=6.673*Math.pow(10, -11);//en N.m².kg-²
-	protected double masse=0;//Masse en kg
+	public static double G=6.673*Math.pow(10, -11);//Constante gravitationnelle en N.m².kg-²
+	protected double masse=1;//Masse en kg
 	
 	private LinkedList<Satellite> satellite_list=new LinkedList<>();//Liste des autres satellites
 	protected DoubleProperty x = new SimpleDoubleProperty(0);//Centre en x
 	protected DoubleProperty y = new SimpleDoubleProperty(0);//Centre en y
 	
 	protected Vecteur vitesse=new Vecteur(0,0);
-	protected Vecteur acceleration=new Vecteur(0,0);
+	protected Vecteur acceleration=new Vecteur(1,0);
 	
 	protected double taille=0;//Nombre de satellites
 	protected double somme_x=0;//Somme des positions en x des satellites
@@ -33,13 +33,26 @@ public class Satellite implements GameObject{
 		gui_satellite.getendXProperty().bind(vitesse.getXproperty().multiply(gui_satellite.getRayon()));
 		gui_satellite.getendYProperty().bind(vitesse.getYproperty().multiply(gui_satellite.getRayon()));
 	}
+	public double getMasse() {
+		return this.masse;
+	}
+	public double getDistance(Satellite b) {
+		return Math.sqrt(Math.pow((b.getX()-this.getX()), 2)+Math.pow(b.getY()-this.getY(), 2));
+	}
+	public double getForce(Satellite b) {//Expression de la loi de Newton
+		return G*(this.getMasse()*b.getMasse())/Math.pow(getDistance(b),2);
+	}
+	public void applyForce(Satellite b) {//TODO Incomplet
+		Vecteur force = new Vecteur();
+		acceleration.addVecteur(force);
+	}
 	@Override
 	public void updateData(long n) {//Permet de mettre a jours la valeurs du vecteur (trajectoire)
 		for(Satellite tmp: satellite_list) {
 			tmp.somme_x-=this.getX();
 			tmp.somme_y-=this.getY();
 		}
-		acceleration.setVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).setMagnitude(1).normaliser();
+		acceleration.addVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).setMagnitude(1).normaliser();
 		
 		vitesse.addVecteur(acceleration);
 		
@@ -71,7 +84,6 @@ public class Satellite implements GameObject{
 	public void clearSatellite() {
 		for(Satellite tmp: satellite_list)removeSatellite(tmp);
 	}
-	
 	//Getter
 	public double getX() {
 		return x.get();
