@@ -90,10 +90,10 @@ public class Vecteur {
 		return subVecteur(vecteur.getX_Magnitude(),vecteur.getY_Magnitude());
 	}
 	//Multiplications sur vecteurs
-	private Vecteur multiplyVecteur(double x) {
+	public Vecteur multiplyVecteur(double x) {//Applique la multiplication sur le vecteur courant
 		return multiplyVecteur(x,x);
 	}
-	public Vecteur getMultiplyVecteur(double multiply) {
+	public Vecteur getNewMultiplyVecteur(double multiply) {//Crée une nouvelle instance de vecteur sur lequel on applique la multiplication
 		return new Vecteur(this).multiplyVecteur(multiply);
 	}
 	public Vecteur multiplyVecteur(double x,double y) {

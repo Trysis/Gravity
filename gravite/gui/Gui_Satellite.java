@@ -17,6 +17,8 @@ public class Gui_Satellite extends Canvas implements Renderer,Selectable_Satelli
 	private GraphicsContext context=this.getGraphicsContext2D();
 	
 	private DoubleProperty rayon = new SimpleDoubleProperty(0);//Rayon
+	private DoubleProperty masse = new SimpleDoubleProperty(0);//Masse
+	
 	private DoubleProperty end_x= new SimpleDoubleProperty(0);//Direction en x du vecteur
 	private DoubleProperty end_y= new SimpleDoubleProperty(0);//Direction en y du vecteur
 	

@@ -9,14 +9,14 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public class Satellite implements GameObject{
 	public static double G=6.673*Math.pow(10, -11);//Constante gravitationnelle en N.m².kg-²
-	protected double masse=1;//Masse en kg
+	protected double masse=15.972*Math.pow(10, Math.random()*24);//Masse en kg (ici de la Terre)
 	
 	private LinkedList<Satellite> satellite_list=new LinkedList<>();//Liste des autres satellites
 	protected DoubleProperty x = new SimpleDoubleProperty(0);//Centre en x
 	protected DoubleProperty y = new SimpleDoubleProperty(0);//Centre en y
 	
 	protected Vecteur vitesse=new Vecteur(0,0);
-	protected Vecteur acceleration=new Vecteur(1,0);
+	protected Vecteur acceleration=new Vecteur(0,0);
 	
 	protected double taille=0;//Nombre de satellites
 	protected double somme_x=0;//Somme des positions en x des satellites
@@ -24,6 +24,7 @@ public class Satellite implements GameObject{
 	protected Gui_Satellite gui_satellite;
 	public Satellite(Gui_Satellite gui_satellite) {
 		this.gui_satellite=gui_satellite;
+		System.out.println(masse);
 		x.set(gui_satellite.getLayoutX());
 		y.set(gui_satellite.getLayoutY());
 		//Properties of layout
@@ -42,27 +43,22 @@ public class Satellite implements GameObject{
 	public double getForce(Satellite b) {//Expression de la loi de Newton
 		return G*(this.getMasse()*b.getMasse())/Math.pow(getDistance(b),2);
 	}
-	public void applyForce(Satellite b) {//TODO Incomplet
-		Vecteur force = new Vecteur();
+	public Vecteur getVecteurVers(Satellite b) {//Crée un vecteur amenant this.Satellite au Satellite b
+		return new Vecteur(b.getX()-this.getX(),b.getY()-this.getY());
+	}
+	public void applyForce(Satellite b) {
+		//F = m*a
+		Vecteur force = getVecteurVers(b).normaliser().multiplyVecteur(getForce(b)/getMasse());
 		acceleration.addVecteur(force);
 	}
 	@Override
 	public void updateData(long n) {//Permet de mettre a jours la valeurs du vecteur (trajectoire)
-		for(Satellite tmp: satellite_list) {
-			tmp.somme_x-=this.getX();
-			tmp.somme_y-=this.getY();
-		}
-		acceleration.addVecteur(somme_x-taille*this.getX(),somme_y-taille*this.getY()).setMagnitude(1).normaliser();
-		
+		for(Satellite tmp: satellite_list)applyForce(tmp);
 		vitesse.addVecteur(acceleration);
 		
-		x.set(x.get()+vitesse.getMultiplyVecteur(0.1).getX_Magnitude());
-		y.set(y.get()+vitesse.getMultiplyVecteur(0.1).getY_Magnitude());
+		x.set(x.get()+vitesse.getNewMultiplyVecteur(1).getX_Magnitude());
+		y.set(y.get()+vitesse.getNewMultiplyVecteur(1).getY_Magnitude());
 		
-		for(Satellite tmp: satellite_list) {
-			tmp.somme_x+=this.getX();
-			tmp.somme_y+=this.getY();
-		}
 		gui_satellite.render();
 	}
 	//Ajouts - remove
