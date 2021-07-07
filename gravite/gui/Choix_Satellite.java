@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
@@ -23,7 +24,7 @@ public class Choix_Satellite extends ScrollPane{
 	
 	private Choix satellite_viewer;
 	private ColorPicker color_chooser=new ColorPicker(Color.BLACK);
-	private Gui_Satellite gui_satellite=Gui_Satellite.instance(15,color_chooser.getValue());
+	private Gui_Satellite gui_satellite=Gui_Satellite.instance(20,15,color_chooser.getValue());
 	private Button put_satellite = new Button("Put");
 	//Components
 	private VBox container = new VBox(5);//Conteneur principal
@@ -31,11 +32,13 @@ public class Choix_Satellite extends ScrollPane{
 	private Image[] images_for_data = new Image[] {//Images associés à la donnée correspondante
 			Ressources.getImage("x"),
 			Ressources.getImage("y"),
+			Ressources.getImage("m"),
 			Ressources.getImage("r")
 	};
 	private Data[] data_input = new Data[] {//Données avec lequel l'utilisateur pourra intéragir pour paramétrer le Satellite
 			new Data(gui_satellite.layoutXProperty(),null),
 			new Data(gui_satellite.layoutYProperty(),null),
+			new Data(gui_satellite.getMasseProperty(),null),
 			new Data(gui_satellite.getRayonProperty(),null)
 	};
 
@@ -91,7 +94,6 @@ public class Choix_Satellite extends ScrollPane{
 	}
 	private class Data extends HBox{
 		private TextField data=new TextField();
-
 		Data(DoubleProperty property,TextFormatter<Change> format){
 			this.setAlignment(Pos.CENTER);
 			//Format

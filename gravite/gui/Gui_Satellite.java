@@ -26,7 +26,10 @@ public class Gui_Satellite extends Canvas implements Renderer,Selectable_Satelli
 		this.widthProperty().bind(rayon.multiply(2));
 		this.heightProperty().bind(rayon.multiply(2));
 	}
-	
+	private Gui_Satellite(double masse,double rayon, Color color) {
+		this(rayon,color);
+		this.setMasse(masse);
+	}
 	private Gui_Satellite(double rayon,Color color) {
 		setRayon(rayon);
 		setColor(color);
@@ -38,12 +41,21 @@ public class Gui_Satellite extends Canvas implements Renderer,Selectable_Satelli
 	}
 	//Setter
 	@Override
+	public void setCenter(double x,double y) {
+		setCenterX(x);
+		setCenterY(y);
+	}
+	@Override
 	public void setCenterX(double x) {
 		this.setLayoutX(x-getRayon());
 	}
 	@Override
 	public void setCenterY(double y) {
 		this.setLayoutY(y-getRayon());
+	}
+	@Override
+	public void setMasse(double masse) {
+		this.masse.set(masse);
 	}
 	@Override
 	public void setRayon(double rayon) {
@@ -64,6 +76,10 @@ public class Gui_Satellite extends Canvas implements Renderer,Selectable_Satelli
 		return this.getLayoutY()+getRayon();
 	}
 	@Override
+	public double getMasse() {
+		return masse.get();
+	}
+	@Override
 	public double getRayon() {
 		return rayon.get();
 	}
@@ -76,6 +92,9 @@ public class Gui_Satellite extends Canvas implements Renderer,Selectable_Satelli
 		SnapshotParameters parametres = new SnapshotParameters();
 		parametres.setFill(Color.TRANSPARENT);
 		return this.snapshot(parametres, null);
+	}
+	public DoubleProperty getMasseProperty() {
+		return masse;
 	}
 	public DoubleProperty getRayonProperty() {
 		return rayon;
@@ -96,15 +115,24 @@ public class Gui_Satellite extends Canvas implements Renderer,Selectable_Satelli
 		context.restore();
 	}
 	//Static
+	public static Gui_Satellite instance(Selectable_Satellite gui_satellite) {
+		Gui_Satellite t=new Gui_Satellite(gui_satellite.getMasse(),gui_satellite.getRayon(),gui_satellite.getColor());
+		t.setCenter(gui_satellite.getCenterX(), gui_satellite.getCenterY());
+		return t;
+	}
 	public static Gui_Satellite instance(double rayon) {
 		return new Gui_Satellite(rayon,BASE_FILL_COLOR);
 	}
 	public static Gui_Satellite instance(double rayon,Color color) {
 		return new Gui_Satellite(rayon,color);
 	}
+	public static Gui_Satellite instance(double masse,double rayon,Color color) {
+		return new Gui_Satellite(masse,rayon,color);
+	}
 	//
 	@Override
 	public String toString() {
 		return "[x="+getCenterX()+"];[y="+getCenterY()+"]";
 	}
+
 }

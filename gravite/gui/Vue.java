@@ -79,7 +79,7 @@ public class Vue extends Group implements Renderer{
 		EventHandler<MouseEvent> click = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				Gui_Satellite tmp = Gui_Satellite.instance(getSelected_Satellite().getRayon(),getSelected_Satellite().getColor());//A changer
+				Gui_Satellite tmp = Gui_Satellite.instance(getSelected_Satellite());//A changer
 				
 				tmp.setCenterX(event.getSceneX());
 				tmp.setCenterY(event.getSceneY());
@@ -92,10 +92,9 @@ public class Vue extends Group implements Renderer{
 		EventHandler<MouseEvent> click = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				Gui_Satellite tmp = Gui_Satellite.instance(getSelected_Satellite().getRayon(),getSelected_Satellite().getColor());//A changer
-				
-				tmp.setCenterX(getSelected_Satellite().getCenterX()-tmp.getRayon());
-				tmp.setCenterY(getSelected_Satellite().getCenterY()-tmp.getRayon());
+				Gui_Satellite tmp = Gui_Satellite.instance(getSelected_Satellite());
+				tmp.setCenter(getSelected_Satellite().getCenterX()-getSelected_Satellite().getRayon(),
+						getSelected_Satellite().getCenterY()-getSelected_Satellite().getRayon());
 				gui_satellite_list.add(tmp);
 			}
 		};
