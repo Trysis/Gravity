@@ -10,21 +10,23 @@ import javafx.beans.property.SimpleDoubleProperty;
 public class Satellite implements GameObject{
 	//public static double G=6.673*Math.pow(10, -11);//Constante gravitationnelle en N.m².kg-²
 	//protected double masse=5*Math.pow(10, 14);//Masse en kg (ici de la Terre *10^-10)
-	double G=1;
+	double G=3;
 	private LinkedList<Satellite> satellite_list=new LinkedList<>();//Liste des autres satellites
 	
-	protected DoubleProperty x = new SimpleDoubleProperty(0);//Centre en x
-	protected DoubleProperty y = new SimpleDoubleProperty(0);//Centre en y
-	protected DoubleProperty masse = new SimpleDoubleProperty(0);//Masse
-	protected DoubleProperty rayon = new SimpleDoubleProperty(1);//Rayon
+	protected DoubleProperty x = new SimpleDoubleProperty();//Centre en x
+	protected DoubleProperty y = new SimpleDoubleProperty();//Centre en y
+	protected DoubleProperty masse = new SimpleDoubleProperty();//Masse
+	protected DoubleProperty rayon = new SimpleDoubleProperty();//Rayon
 	
-	protected Vecteur vitesse=new Vecteur(0,0);
-	protected Vecteur acceleration=new Vecteur(0,0);
+	protected Vecteur vitesse=new Vecteur();
+	protected Vecteur acceleration=new Vecteur();
 	
 	protected double taille=0;//Nombre de satellites
 	protected double somme_x=0;//Somme des positions en x des satellites
 	protected double somme_y=0;//Somme des positions en y des satellites
 	protected Gui_Satellite gui_satellite;
+	protected double rendering_speed=1;
+	
 	public Satellite(Gui_Satellite gui_satellite) {
 		this.gui_satellite=gui_satellite;
 		
@@ -47,53 +49,95 @@ public class Satellite implements GameObject{
 	public double getRayon() {
 		return this.rayon.get();
 	}
-	public boolean collide(Satellite b) {//Provisoire, car ne prend pas en charge des polygons de forme non circulaire
-		return getDistance(b)<=this.gui_satellite.getRayon()+b.gui_satellite.getRayon();
-	}
-	public void onCollision(Satellite b) {//Collision "response" //TODO applications vectorielles d'entre-choc à faire
-		double rayons = this.getRayon()+b.getRayon();
-		Vecteur vect = getVecteurVers(b).normaliser().multiplyVecteur(rayons+1);
-		b.x.set(this.getX()+vect.getX_Magnitude());
-		b.y.set(this.getY()+vect.getY_Magnitude());
+	public double getCarreDistance(Satellite b) {
+		return (b.getX()-this.getX())*(b.getX()-this.getX())+(b.getY()-this.getY())*(b.getY()-this.getY());
 	}
 	public double getDistance(Satellite b) {
-		return Math.sqrt(Math.pow((b.getX()-this.getX()), 2)+Math.pow(b.getY()-this.getY(), 2));
-	}
-	private double constraint(double x,double x1,double x2) {
-		if(x>x2)return x2;
-		return x<x1 ? x1:x;
+		return Math.sqrt(getCarreDistance(b));
 	}
 	public double getForce(Satellite b) {//Expression de la loi de Newton
-		double distance = constraint(getDistance(b),this.gui_satellite.getRayon()+b.gui_satellite.getRayon(),500);
+		double distance = constraint(getDistance(b),0,1000);
 		return (G*this.getMasse()*b.getMasse())/(distance*distance);
 	}
 	public Vecteur getVecteurVers(Satellite b) {//Crée un vecteur amenant this.Satellite au Satellite b
 		return new Vecteur(b.getX()-this.getX(),b.getY()-this.getY());
 	}
-	public void applyForce(Satellite b) {
-		//F = m*a
-		Vecteur force = getVecteurVers(b).normaliser().multiplyVecteur(getMasse());
-		if(getMasse()!=0)force.multiplyVecteur(getForce(b)/(getMasse()*getMasse()));
-		acceleration.addVecteur(force);
+	public boolean collide(Satellite b) {//Provisoire, car ne prend pas en charge des polygons de forme non circulaire
+		return getCarreDistance(b)<=(b.getRayon()+this.getRayon())*(b.getRayon()+this.getRayon());
 	}
+	private double constraint(double x,double x1,double x2) {//x compris entre [x1;x2]
+		if(x>x2)return x2;
+		return x<x1 ? x1:x;
+	}
+	public void applyForce(Satellite b) {//Applique la force d'attraction gravitationnelle sur le Satellite b
+		//F = m*a
+		Vecteur force = b.getVecteurVers(this).normaliser().multiplyVecteur(b.getMasse());
+		if(b.getMasse()!=0)force.multiplyVecteur(b.getForce(this)/(b.getMasse()*b.getMasse()));
+		b.getVecteurAcceleration().addVecteur(force);
+	}
+	public void onCollision(Satellite b) {//Collision "response" //TODO applications vectorielles d'entre-choc à faire
+		//https://ericleong.me/research/circle-circle/ Formula
+		double dist = getDistance(b);
+		double midpointx = (this.getX() + b.getX()) / 2; 
+		double midpointy = (this.getY() + b.getY()) / 2;
+		
+		double c1_x = midpointx + this.getRayon() * (this.getX() - b.getX()) / dist; 
+		double c1_y = midpointy + this.getRayon() * (this.getY() - b.getY()) / dist; 
+		double c2_x = midpointx + b.getRayon() * (b.getX() - this.getX()) / dist; 
+		double c2_y = midpointy + b.getRayon() * (b.getY() - this.getY()) / dist;
+		
+		this.x.set(c1_x);
+		this.y.set(c1_y);
+		b.x.set(c2_x);
+		b.y.set(c2_y);
+		
+		dist = getDistance(b);
+		
+		double cx2=b.getX();
+		double cx1=this.getX();
+		double cy2=b.getY();
+		double cy1=this.getY();
+		double circle1_vx=this.getVecteurVitesse().getX_Magnitude();
+		double circle1_vy=this.getVecteurVitesse().getY_Magnitude();
+		double circle1_masse=this.getMasse();
+		
+		double circle2_vx=b.getVecteurVitesse().getX_Magnitude();
+		double circle2_vy=b.getVecteurVitesse().getY_Magnitude();
+		double circle2_masse=b.getMasse();
+		
+		double nx = (cx2 - cx1) / dist; 
+		double ny = (cy2 - cy1) / dist; 
+		double p = 2 * (circle1_vx * nx + circle1_vy * ny - circle2_vx * nx - circle2_vy * ny) / 
+		        (circle1_masse + circle2_masse); 
+		double vx1 = circle1_vx - p * circle1_masse * nx; 
+		double vy1 = circle1_vy - p * circle1_masse * ny; 
+		double vx2 = circle2_vx + p * circle2_masse * nx; 
+		double vy2 = circle2_vy + p * circle2_masse * ny;
+		
+		this.getVecteurVitesse().setVecteur(vx1, vy1);
+		b.getVecteurVitesse().setVecteur(vx2, vy2);
+	}
+
 	@Override
 	public void updateData(long n) {//Permet de mettre a jours la valeurs du vecteur (trajectoire)
-		for(Satellite tmp: satellite_list) {
-			applyForce(tmp);
-		}
-		vitesse.addVecteur(acceleration);
-		acceleration.setVecteur(0, 0);
+		for(Satellite tmp: satellite_list)tmp.applyForce(this);
 		
-		x.set(x.get()+vitesse.getNewMultiplyVecteur(1).getX_Magnitude());
-		y.set(y.get()+vitesse.getNewMultiplyVecteur(1).getY_Magnitude());
-		for(Satellite tmp: satellite_list)if(tmp.collide(this))tmp.onCollision(this);
-		gui_satellite.render();
+		getVecteurVitesse().addVecteur(getVecteurAcceleration());
+		getVecteurAcceleration().setVecteur(0, 0);
+		
+		x.set(x.get()+vitesse.getX_Magnitude()*rendering_speed);
+		y.set(y.get()+vitesse.getY_Magnitude()*rendering_speed);
+		
+		for(Satellite tmp: satellite_list)if(this.collide(tmp))this.onCollision(tmp);
+		//gui_satellite.render();
 	}
 	//Ajouts - remove
 	public void addSatellite(Satellite satellite) {
 		taille++;
 		somme_x+=satellite.getX();
 		somme_y+=satellite.getY();
+		if(satellite.collide(this))satellite.onCollision(this);//Résolution partielle, 
+		//ne prend pas en compte une résolution d'une collision qui en entraîne une autre
 		satellite_list.add(satellite);
 	}
 	public void addSatellite(LinkedList<Satellite> satellite) {
@@ -115,7 +159,13 @@ public class Satellite implements GameObject{
 	public double getY() {
 		return y.get();
 	}
-	public Vecteur getVecteur() {
+	public Vecteur getVecteurVitesse() {
 		return vitesse;
+	}
+	public Vecteur getVecteurAcceleration() {
+		return acceleration;
+	}
+	public String toString() {
+		return "Position ["+this.getX()+";"+this.getY()+"]\n"+"Vecteur vitesse = "+getVecteurVitesse();
 	}
 }

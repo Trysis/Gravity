@@ -23,7 +23,7 @@ public class Choix_Satellite extends ScrollPane{
 	private Selectable_Satellite selected;
 	
 	private Choix satellite_viewer;
-	private ColorPicker color_chooser=new ColorPicker(Color.BLACK);
+	private ColorPicker color_chooser=new ColorPicker(Color.GRAY.darker());
 	private Gui_Satellite gui_satellite=Gui_Satellite.instance(20,15,color_chooser.getValue());
 	private Button put_satellite = new Button("Put");
 	//Components
@@ -49,6 +49,8 @@ public class Choix_Satellite extends ScrollPane{
 		satellite_viewer=new Choix(selected);
 		//Parametres graphiques
 		container.setAlignment(Pos.CENTER);
+		color_chooser.setStyle("-fx-color-rect-width: 40px;\r\n"
+				+ " -fx-color-label-visible: false ;");//TODO Fichier CSS pour gérer ça
 		color_chooser.getStyleClass().add("button");
 		//Listener
 		color_chooser.valueProperty().addListener(e->{

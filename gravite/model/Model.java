@@ -9,7 +9,7 @@ import gui.Gui_Satellite;
 public class Model {
 	private HashMap<Integer,Satellite> satellite_list = new HashMap<>();
 	
-	public GameObject addNewSatellite(Gui_Satellite gui_satellite) {
+	public GameObject addSatellite(Gui_Satellite gui_satellite) {
 		Satellite satellite = new Satellite(gui_satellite);
 		for(Map.Entry<Integer, Satellite> tmp: satellite_list.entrySet()) {
 			satellite.addSatellite(tmp.getValue());

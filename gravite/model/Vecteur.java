@@ -135,7 +135,7 @@ public class Vecteur {
 		return Math.pow(getX_Magnitude()*getX_Magnitude()+getY_Magnitude()*getY_Magnitude(), 0.5);
 	}
 	public String toString() {
-		return "Direction = ["+x.get()+";"+y.get()+"]/	Vitesse ="+magnitude;
+		return "["+this.getX_Magnitude()+";"+this.getY_Magnitude()+"]";
 	}
 
 }

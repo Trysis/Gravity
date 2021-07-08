@@ -12,7 +12,7 @@ public class Controleur {
 	private Vue vue;
 
 	EventHandler<MouseEvent> click_g = (MouseEvent) ->{
-		game_loop.addGameObject(vue.getSatellite().hashCode(),model.addNewSatellite(vue.getSatellite()));
+		game_loop.addGameObject(vue.getSatellite().hashCode(),model.addSatellite(vue.getSatellite()));
 	};
 	EventHandler<MouseEvent> click_d = (MouseEvent) ->{
 		//game_loop.removeGameObject(model.removeSatellite(/*Clicked On*.getId()/));
