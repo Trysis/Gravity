@@ -93,10 +93,11 @@ public class Satellite implements GameObject{
 		
 		dist = getDistance(b);
 		
-		double cx2=b.getX();
 		double cx1=this.getX();
-		double cy2=b.getY();
 		double cy1=this.getY();
+		double cx2=b.getX();
+		double cy2=b.getY();
+		
 		double circle1_vx=this.getVecteurVitesse().getX_Magnitude();
 		double circle1_vy=this.getVecteurVitesse().getY_Magnitude();
 		double circle1_masse=this.getMasse();
@@ -108,11 +109,11 @@ public class Satellite implements GameObject{
 		double nx = (cx2 - cx1) / dist; 
 		double ny = (cy2 - cy1) / dist; 
 		double p = 2 * (circle1_vx * nx + circle1_vy * ny - circle2_vx * nx - circle2_vy * ny) / 
-		        (circle1_masse + circle2_masse); 
-		double vx1 = circle1_vx - p * circle1_masse * nx; 
-		double vy1 = circle1_vy - p * circle1_masse * ny; 
-		double vx2 = circle2_vx + p * circle2_masse * nx; 
-		double vy2 = circle2_vy + p * circle2_masse * ny;
+		        (circle1_masse + circle2_masse);
+		double vx1 = circle1_vx - p * circle2_masse * nx; 
+		double vy1 = circle1_vy - p * circle2_masse * ny; 
+		double vx2 = circle2_vx + p * circle1_masse * nx; 
+		double vy2 = circle2_vy + p * circle1_masse * ny;
 		
 		this.getVecteurVitesse().setVecteur(vx1, vy1);
 		b.getVecteurVitesse().setVecteur(vx2, vy2);

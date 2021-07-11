@@ -40,10 +40,6 @@ public class Vue extends Group implements Renderer{
 		gui_play_stop.layoutXProperty().bind(gui_satellite_choice.layoutXProperty());
 		gui_play_stop.layoutYProperty().bind(gui_satellite_choice.layoutYProperty().add(gui_satellite_choice.heightProperty().multiply(1.1)));
 	}
-	public Vue() {
-		setEventFilterToCanvas();
-		setEventFilterToPutButton();
-	}
 	//Getter
 	public final Gui_Satellite getSatellite() {
 		return gui_satellite_list.getLast();
@@ -75,7 +71,7 @@ public class Vue extends Group implements Renderer{
 	public final <T extends Event> void addEventHandlerToPutButton(EventType<T> eventType, EventHandler<? super T> eventHandler) {
 		gui_satellite_choice.getPutButton().addEventHandler(eventType, eventHandler);
 	}
-	private void setEventFilterToCanvas() {
+	public void setEventFilterToCanvas(EventType<MouseEvent> mouse_event) {
 		EventHandler<MouseEvent> click = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -86,9 +82,9 @@ public class Vue extends Group implements Renderer{
 				gui_satellite_list.add(tmp);
 			}
 		};
-		addEventFiltertoCanvas(MouseEvent.MOUSE_RELEASED, click);
+		addEventFiltertoCanvas(mouse_event, click);
 	}
-	public final void setEventFilterToPutButton() {
+	public void setEventFilterToPutButton(EventType<MouseEvent> mouse_event) {
 		EventHandler<MouseEvent> click = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -98,9 +94,9 @@ public class Vue extends Group implements Renderer{
 				gui_satellite_list.add(tmp);
 			}
 		};
-		addEventFilterToPutButton(MouseEvent.MOUSE_CLICKED, click);
+		addEventFilterToPutButton(mouse_event, click);
 	}
-	public final void bind(ObservableValue<? extends Number> readOnlyDoubleProperty,ObservableValue<? extends Number> readOnlyDoubleProperty2) {
+	public void bind(ObservableValue<? extends Number> readOnlyDoubleProperty,ObservableValue<? extends Number> readOnlyDoubleProperty2) {
 		canvas.widthProperty().bind(readOnlyDoubleProperty);
 		canvas.heightProperty().bind(readOnlyDoubleProperty2);
 	}

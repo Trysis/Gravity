@@ -11,10 +11,10 @@ public class Controleur {
 	private Model model;
 	private Vue vue;
 
-	EventHandler<MouseEvent> click_g = (MouseEvent) ->{
+	EventHandler<MouseEvent> click_g = (MouseEvent) ->{//Ajout d'un Satellite
 		game_loop.addGameObject(vue.getSatellite().hashCode(),model.addSatellite(vue.getSatellite()));
 	};
-	EventHandler<MouseEvent> click_d = (MouseEvent) ->{
+	EventHandler<MouseEvent> click_d = (MouseEvent) ->{//Suppression d'un Satellite
 		//game_loop.removeGameObject(model.removeSatellite(/*Clicked On*.getId()/));
 	};
 	public Controleur(Model model, Vue vue){
@@ -25,16 +25,18 @@ public class Controleur {
 		setCanvasSizeListener();
 		setEventHandlerToCanvas();
 		setEventHandlerToPutButton();
+		setEventFilterToCanvas();
+		setEventFilterToPutButton();
 		
 		game_loop.setRenderer(vue).start();
 	}
-	private void setBooleanListener() {//Boolean listener pour mettre en pause ou play les animations
+	private void setBooleanListener() {//Boolean listener, permet de mettre en pause/play l'affichage
 		vue.getBooleanProperty_fromPlay_Stop().addListener(e->{
 			if(vue.getBooleanProperty_fromPlay_Stop().get())game_loop.start();
 			else game_loop.stop();
 		});
 	}
-	private void setCanvasSizeListener() {//Size listener pour mettre a jour l'affichage seulement lorsque la taille de la fenetre change
+	private void setCanvasSizeListener() {//Size listener permet à la Game_loop d'actualiser l'affichage après une redimension
 		vue.getCanvaswidthProperty().addListener(e->{
 			game_loop.setChanged(true);
 		});
@@ -42,10 +44,16 @@ public class Controleur {
 			game_loop.setChanged(true);
 		});
 	}
-	private void setEventHandlerToCanvas() {//Event permettant lors d'un clique sur Canvas de creer un satellite
-		vue.addEventHandlertoCanvas(MouseEvent.MOUSE_RELEASED, click_g);
+	private void setEventHandlerToCanvas() {//Event qui se produit après l'EventFilter 
+		vue.addEventHandlertoCanvas(MouseEvent.MOUSE_CLICKED, click_g);//Permet de créer un Satellite lors d'un clique sur le Canvas
 	}
-	private void setEventHandlerToPutButton() {
-		vue.addEventHandlerToPutButton(MouseEvent.MOUSE_CLICKED, click_g);
+	private void setEventHandlerToPutButton() {//Set l'EventHandler , Event qui se produit après l'EventFilter 
+		vue.addEventHandlerToPutButton(MouseEvent.MOUSE_CLICKED, click_g);//Permet de créer un Satellite lors d'un clique sur le Bouton
+	}
+	private void setEventFilterToCanvas() {//Set l'EventFilter , Event qui se produit avant l'EventHandler
+		vue.setEventFilterToCanvas(MouseEvent.MOUSE_CLICKED);//Permet de créer un Gui_Satellite lors d'un clique sur le Canvas
+	}
+	private void setEventFilterToPutButton() {//Set l'EventFilter , Event qui se produit avant l'EventHandler
+		vue.setEventFilterToPutButton(MouseEvent.MOUSE_CLICKED);//Permet de créer un Gui_Satellite lors d'un clique sur le bouton
 	}
 }
